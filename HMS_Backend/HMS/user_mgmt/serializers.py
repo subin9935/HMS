@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from .models import CustomerUser, CustomerPasswordResetToken
 
+
 # ---------------------------
 # Registration Serializer
 # ---------------------------

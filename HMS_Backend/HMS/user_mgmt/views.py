@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from datetime import timedelta
-from django.contrib.auth.hashers import make_password
+
 
 from .models import CustomerUser, CustomerPasswordResetToken
 from .serializers import (
@@ -60,6 +60,7 @@ class PasswordResetRequestView(APIView):
         serializer = PasswordResetRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data['email']
+  
 
         try:
             user = CustomerUser.objects.get(email=email)
@@ -71,7 +72,7 @@ class PasswordResetRequestView(APIView):
         CustomerPasswordResetToken.objects.create(user=user, token=token)
 
         # Send email (adjust link as needed)
-        reset_link = f"http://your-frontend/reset-password?email={email}&token={token}"
+        reset_link = f"http://localhost:5173/password-reset-confirm?email={email}&token={token}"
         send_mail(
             "Password Reset Request",
             f"Click the link to reset your password: {reset_link}",
@@ -87,7 +88,6 @@ class PasswordResetRequestView(APIView):
 # ---------------------------
 class PasswordResetConfirmView(APIView):
     permission_classes = [AllowAny]
-
     def post(self, request):
         serializer = PasswordResetConfirmSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)

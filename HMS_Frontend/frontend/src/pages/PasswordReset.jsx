@@ -8,7 +8,7 @@ const PasswordReset = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("reset/", { email }); // maps to PasswordResetRequestSerializer
+      await api.post("password-reset/", { email }); // maps to PasswordResetRequestSerializer
       alert("Password reset email sent");
     } catch {
       alert("Error sending reset email");

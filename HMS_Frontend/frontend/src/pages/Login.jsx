@@ -1,7 +1,7 @@
 import React,{useContext, useState} from 'react'
 import axios from 'axios'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faSpinner, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom' // For Navigation
 import { AuthContext } from '../context/AuthContext'
 import { Link } from "react-router-dom"; 
@@ -19,6 +19,7 @@ const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
 
    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  
 
     const handleSubmit = async (e) => {
 
@@ -38,10 +39,21 @@ const Login = () => {
 
             console.log('response.data =>' ,response.data)
             console.log('Login Success')
+
+            const userResponse = await axios.get('http://127.0.0.1:8000/api/profile/',{
+                headers: {
+                    Authorization: `Bearer ${response.data.access}`
+                }
+            });
+            
+            console.log('userResponse.data =>', userResponse.data)
+            localStorage.setItem('userInfo',JSON.stringify(userResponse.data))
+            // Redirect to Home Page
+            navigate("/")
             setError({})
             setLoading(false)
             setIsLoggedIn(true)
-            // navigate("/")
+           
         
         }catch(error){
             console.error('Login Failed:' , error.response.data)
@@ -110,11 +122,7 @@ const Login = () => {
                 onClick={togglePasswordVisibility}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700"
               >
-                {showPassword ? (
-                  <i className="fas fa-eye-slash"></i>
-                ) : (
-                  <i className="fas fa-eye"></i>
-                )}
+               <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
               </button>
             </div>
           </div>
@@ -133,7 +141,7 @@ const Login = () => {
                 Remember me
               </label>
             </div>
-            <Link to ="/reset" className="text-sm text-blue-600 hover:underline">
+            <Link to ="/password-reset" className="text-sm text-blue-600 hover:underline">
               Forget password?
             </Link>
           </div>
@@ -147,7 +155,9 @@ const Login = () => {
           </button>
                            )}
 
-          
+          <Link to ="/register" className="text-sm text-blue-600 hover:underline">
+              Not Resistered Yet ? Click here to Register .
+            </Link>
           
         </form>
 

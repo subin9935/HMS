@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Open Backend Terminal",
+      "type": "shell",
+      "command": "powershell",
+      "options": {
+        "cwd": "E:\\django_with_react\\HMS\\HMS_Backend\\HMS"
+      },
+      "presentation": {
+        "panel": "new"
+      }
+    },
+    {
+      "label": "Open Frontend Terminal",
+      "type": "shell",
+      "command": "powershell",
+      "options": {
+        "cwd": "E:\\django_with_react\\HMS\\HMS_Frontend\\frontend"
+      },
+      "presentation": {
+        "panel": "new"
+      }
+    }
+  ]
+}

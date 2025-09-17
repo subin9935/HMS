@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { 
   Users, 
   UserCheck, 
@@ -19,7 +22,8 @@ import {
 const Home = () => {
   const [activeMenu, setActiveMenu] = useState('dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
+  const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
+  const username = userInfo.username || 'User';
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Activity },
     { id: 'patients', label: 'Patients', icon: Users },
@@ -29,6 +33,12 @@ const Home = () => {
     { id: 'reports', label: 'Reports', icon: FileText },
     { id: 'billing', label: 'Billing', icon: UserCheck },
   ];
+  const navigate = useNavigate()
+  const { logout } = useContext(AuthContext);
+  const handleLogout = () => {
+    logout();             // Clear token & update state
+    navigate("/login");   // Redirect to login page
+  };
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
@@ -109,7 +119,7 @@ const Home = () => {
             </div>
             
             {/* Notifications */}
-            <button className="relative p-2 hover:bg-gray-100 rounded-lg">
+            <button className="relative p-2 hover:bg-gray-100 rounded-lg" onClick={handleLogout}>
               <LogOut className="w-5 h-5 text-gray-600" />
              
             </button>
@@ -117,7 +127,7 @@ const Home = () => {
             {/* User Profile */}
             <div className="flex items-center space-x-3">
               <div className="text-right">
-                <p className="text-sm font-medium text-gray-800">Dr. Sarah Johnson</p>
+                <p className="text-sm font-medium text-gray-800">Welcome! {username}</p>
                 <p className="text-xs text-gray-500">Administrator</p>
               </div>
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
@@ -280,6 +290,7 @@ const Home = () => {
               <p className="text-gray-600">Manage patient billing, payments, and financial records.</p>
             </div>
           )}
+
         </main>
       </div>
     </div>

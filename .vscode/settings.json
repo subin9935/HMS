@@ -1,0 +1,13 @@
+{
+  "terminal.integrated.profiles": {
+    "Backend": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "cwd": "E:\\django_with_react\\HMS\\HMS_Backend\\HMS"
+    },
+    "Frontend": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "cwd": "E:\\django_with_react\\HMS\\HMS_Frontend\\frontend"
+    }
+  },
+  "terminal.integrated.defaultProfile.windows": "Backend"
+}
