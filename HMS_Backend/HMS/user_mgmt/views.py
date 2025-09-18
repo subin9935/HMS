@@ -7,6 +7,10 @@ from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.core.mail import send_mail
 from datetime import timedelta
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
 
 
 from .models import CustomerUser, CustomerPasswordResetToken
@@ -14,7 +18,7 @@ from .serializers import (
     CustomerUserRegisterSerializer,
     PasswordResetRequestSerializer,
     PasswordResetConfirmSerializer,
-    CustomerTokenObtainPairSerializer
+    CustomerTokenObtainPairSerializer,ChangePasswordSerializer
 )
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -115,3 +119,17 @@ class PasswordResetConfirmView(APIView):
         reset_token.save()
 
         return Response({"detail": "Password reset successful"}, status=status.HTTP_200_OK)
+    
+
+class ChangePasswordView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        user.set_password(serializer.validated_data['new_password'])
+        user.save()
+
+        return Response({"detail": "Password changed successfully"}, status=status.HTTP_200_OK)

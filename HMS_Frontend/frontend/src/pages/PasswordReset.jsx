@@ -1,17 +1,26 @@
 import { useState } from "react";
 import api from "../utils/api";
 import { Link } from "react-router-dom"; 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSpinner,} from "@fortawesome/free-solid-svg-icons";
 
 const PasswordReset = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
     try {
       await api.post("password-reset/", { email }); // maps to PasswordResetRequestSerializer
+      setLoading(false)
       alert("Password reset email sent");
+       
     } catch {
+      setLoading(false)
       alert("Error sending reset email");
+    }finally {
+      setLoading(false)
     }
   };
 
@@ -20,7 +29,7 @@ const PasswordReset = () => {
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 space-y-6">
         {/* Blue circular icon */}
         <div className="flex justify-center">
-          <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-slate-600 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
@@ -50,26 +59,37 @@ const PasswordReset = () => {
             />
           </div>
           
-          <button
+
+          {loading ? (
+              <button
+            type="submit"
+            className="w-full bg-slate-900 text-white py-2 px-4 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200" disabled>
+          <FontAwesomeIcon  icon={faSpinner} spin/>
+            Sending Email
+          </button>
+          ) :(
+              <button
             type="submit"
             className="w-full bg-slate-900 text-white py-2 px-4 rounded-md hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
           >
             Send Reset Email
           </button>
+          )}
+          
         </form>
         
         {/* Back to Sign In link */}
+
+        
         <div className="text-center mt-4">
-            <Link to ="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+            <Link to ="/login" className="text-sm text-blue-600 hover:underline">
                Back to Sign In
             </Link>
+            
         </div>
       </div>
       
-      {/* Footer */}
-      <div className="mt-8 text-center text-gray-500 text-sm">
-        HMS
-      </div>
+      
     </div>
   );
 };

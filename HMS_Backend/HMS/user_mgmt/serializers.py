@@ -5,6 +5,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from .models import CustomerUser, CustomerPasswordResetToken
+from django.contrib.auth.password_validation import validate_password
 
 
 # ---------------------------
@@ -134,3 +135,20 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         reset_token.save()
 
         return user
+
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_current_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Current password is incorrect")
+        return value
+
+    def validate_new_password(self, value):
+        user = self.context['request'].user
+        validate_password(value, user=user)
+        return value

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../utils/api";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -107,7 +108,13 @@ const Register = () => {
           </button>
                            )}
 
-          
+           {/* Register link */}
+          <Link
+            to="/login"
+            className="block text-sm text-blue-600 hover:underline text-center mt-2"
+          >
+            Back to Sign in
+          </Link>
           
         </form>
 
