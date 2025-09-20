@@ -1,6 +1,9 @@
 from rest_framework import serializers
-from .models import Patient, Doctor, Appointments, Insurance
+from .models import Patient, Doctor, Appointments, Insurance,PatientDocument
 
+
+PAPERLESS_URL = "http://localhost:8001/api/documents/post_document/"
+PAPERLESS_TOKEN = "0ed097627519b03e87b239e1d06a3cbd8a086a61"
 
 
 class InsuranceSerializer(serializers.ModelSerializer):
@@ -22,23 +25,25 @@ class InsuranceSerializer(serializers.ModelSerializer):
         fields = ['id', 'plan_name', 'policy_number', 'insurance_provider','patient','patient_id']
 
 
+class PatientDocumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PatientDocument
+        fields = ["id", "paperless_id", "doc_type"]
+
+
 class PatientSerializer(serializers.ModelSerializer):
-    # Optional nested insurances for display or nested creation
-    insurances = InsuranceSerializer(many=True, required=False)
+    documents = PatientDocumentSerializer(many=True, write_only=True, required=False)
+    # Insurances are read-only, not created instantly
+    insurances = InsuranceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Patient
-        fields = ['id', 'first_name', 'last_name', 'date_of_birth', 'email', 'phone', 'insurances']
+        fields = [
+            'id', 'first_name', 'last_name', 'date_of_birth', 'email', 'phone',
+            'documents', 'insurances'
+        ]
 
-    def create(self, validated_data):
-        insurances_data = validated_data.pop('insurances', [])
-        patient = Patient.objects.create(**validated_data)
-        for insurance_data in insurances_data:
-            Insurance.objects.create(patient=patient, **insurance_data)
-        return patient
-
-
-# ------------------------------
+   # ------------------------------
 # Doctor Serializer
 # ------------------------------
 class DoctorSerializer(serializers.ModelSerializer):

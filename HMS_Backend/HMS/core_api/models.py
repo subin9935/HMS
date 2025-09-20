@@ -11,6 +11,15 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+# Document model to link with Patient
+class PatientDocument(models.Model):
+    patient = models.ForeignKey(Patient, related_name="documents", on_delete=models.CASCADE)
+    paperless_id = models.CharField(max_length=100)
+    doc_type = models.CharField(max_length=50)  # e.g. "citizenship", "passport"
+
+    def __str__(self):
+        return f"{self.patient} - {self.doc_type} ({self.paperless_id})"
     
 
 class Insurance(models.Model):
